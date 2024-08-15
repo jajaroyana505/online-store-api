@@ -6,7 +6,7 @@
 | ------ | ---------------- | -------------- |
 | POST   | `/login`         | Login user     |
 | POST   | `/register`      | Register user  |
-| POST   | `/{id}/password` | Ganti password |
+| PUT    | `/{id}/password` | Ganti password |
 | GET    | `/logout`        | Logout         |
 
 ### Contoh Request:
@@ -37,8 +37,8 @@ Content-Type: application/json
 
 | Method | Endpoint        | Description                             |
 | ------ | --------------- | --------------------------------------- |
-| POST   | `/product`      | Tambah produk                           |
-| GET    | `/product`      | Ambil semua data produk                 |
+| POST   | `/products`     | Tambah produk                           |
+| GET    | `/products`     | Ambil semua data produk                 |
 | GET    | `/product/{id}` | Ambil data produk berdasarkan ID produk |
 | PUT    | `/product/{id}` | Update data produk                      |
 | DELETE | `/product/{id}` | Hapus data produk                       |
@@ -61,8 +61,8 @@ Content-Type: application/json
 
 | Method | Endpoint             | Description                           |
 | ------ | -------------------- | ------------------------------------- |
-| POST   | `/order`             | Tambah order                          |
-| GET    | `/order`             | Ambil semua data order                |
+| POST   | `/orders`            | Tambah order                          |
+| GET    | `/orders`            | Ambil semua data order                |
 | GET    | `/order/{id}`        | Ambil data order berdasarkan ID Order |
 | PUT    | `/order/{id}/status` | Ubah status order                     |
 | DELETE | `/order/{id}`        | Hapus data order                      |
