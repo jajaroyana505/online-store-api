@@ -94,13 +94,23 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 
 	newPasswordCh := make(chan string)
 	var userInput struct {
-		CurrentPassword string `json:"current_password"`
-		NewPassword     string `json:"new_password"`
+		CurrentPassword string `json:"current_password" validate:"required"`
+		NewPassword     string `json:"new_password" validate:"required"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&userInput); err != nil {
 		response := map[string]string{"message": "Json tidak valid"}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
+	err = helper.ValidateStruct(&userInput)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := map[string]interface{}{
+			"status":  "fail",
+			"message": errors,
+		}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
@@ -150,7 +160,16 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
-
+	err := helper.ValidateStruct(&userInput)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := map[string]interface{}{
+			"status":  "fail",
+			"message": errors,
+		}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
 	defer r.Body.Close()
 
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(userInput.Password), bcrypt.DefaultCost)

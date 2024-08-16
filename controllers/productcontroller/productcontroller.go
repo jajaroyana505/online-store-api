@@ -32,19 +32,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// func Index(w http.ResponseWriter, r *http.Request) {
-
-// 	var products []models.Product
-// 	err := models.GetAllProducts(models.DB, &products)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	helper.ResponseJSON(w, http.StatusOK, products)
-
-// }
-
 func Create(w http.ResponseWriter, r *http.Request) {
 
 	var product models.Product
@@ -54,10 +41,21 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err := helper.ValidateStruct(&product)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := map[string]interface{}{
+			"status":  "fail",
+			"message": errors,
+		}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
+
 	defer r.Body.Close()
 
 	// inser ke db
-	err := product.CreateProduct()
+	err = product.CreateProduct()
 	if err != nil {
 		response := map[string]interface{}{
 			"status":  "fail",
@@ -116,11 +114,22 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var product models.Product
+
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&product); err != nil {
 		response := map[string]interface{}{
 			"status":  "fail",
 			"message": "format JSON tidak valid",
+		}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
+	err = helper.ValidateStruct(&product)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := map[string]interface{}{
+			"status":  "fail",
+			"message": errors,
 		}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return

@@ -37,10 +37,21 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
 	}
+	err := helper.ValidateStruct(&order)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := map[string]interface{}{
+			"status":  "fail",
+			"message": errors,
+		}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+
+	}
 
 	defer r.Body.Close()
 
-	err := order.CreateOrder()
+	err = order.CreateOrder()
 	if err != nil {
 		response := map[string]interface{}{
 			"status":  "fail",
@@ -93,7 +104,7 @@ func UpdateStatus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var updatedData struct {
-		Status string `json:"status"`
+		Status string `json:"status" validate:"required"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&updatedData); err != nil {
@@ -102,6 +113,16 @@ func UpdateStatus(w http.ResponseWriter, r *http.Request) {
 			"message": "JSON tidak valid",
 		}
 		helper.ResponseJSON(w, http.StatusBadGateway, response)
+		return
+	}
+	err = helper.ValidateStruct(&updatedData)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := map[string]interface{}{
+			"status":  "fail",
+			"message": errors,
+		}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
 

@@ -6,10 +6,10 @@ import (
 
 type Users struct {
 	Id           int64  `gorm:"primaryKey" json:"id"`
-	NamaLengkap  string `json:"nama_lengkap"`
-	JenisKelamin string `json:"jenis_kelamin"`
-	Username     string `json:"username"`
-	Password     string `json:"password"`
+	NamaLengkap  string `json:"nama_lengkap" validate:"required"`
+	JenisKelamin string `json:"jenis_kelamin" validate:"required"`
+	Username     string `json:"username" validate:"required"`
+	Password     string `json:"password" validate:"required"`
 }
 
 func (u *Users) CreateUser(db *gorm.DB) int64 {

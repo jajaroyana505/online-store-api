@@ -1,10 +1,10 @@
 package models
 
 type Order struct {
-	Id        int64   `gorm:"primaryKey" json:"id"`
-	IdProduct int64   `json:"id_product"`
-	Jumlah    int64   `json:"jumlah"`
-	Status    string  `json:"status"`
+	Id        int64   `gorm:"primaryKey" json:"id" `
+	IdProduct int64   `json:"id_product" validate:"required"`
+	Jumlah    int64   `json:"jumlah" validate:"required"`
+	Status    string  `json:"status" validate:"required"`
 	Product   Product `gorm:"foreignKey:IdProduct"` // Relasi Many-to-One
 }
 

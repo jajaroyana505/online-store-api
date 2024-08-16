@@ -2,9 +2,9 @@ package models
 
 type Product struct {
 	Id          int64   `gorm:"primaryKey" json:"id"`
-	NamaProduct string  `json:"nama_product"`
-	Stok        int64   `json:"stok"`
-	Harga       float64 `json:"harga"`
+	NamaProduct string  `json:"nama_product" validate:"required"`
+	Stok        int64   `json:"stok" validate:"required,number"`
+	Harga       float64 `json:"harga" validate:"required,number"`
 	Orders      []Order `gorm:"foreignKey:IdProduct"` // Relasi One-to-Many
 }
 
